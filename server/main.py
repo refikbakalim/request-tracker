@@ -1,13 +1,12 @@
 from flask import Flask, render_template, request
 import random
 import time
-from datetime import datetime
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return "index" 
+    return "" 
 
 @app.route('/get', methods=['GET'])
 def get():
@@ -36,4 +35,4 @@ def sleep(request):
         logfile.write(request + "," + str(response_time) + "," + str(int(time.time())) + "\n")
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=True, host="0.0.0.0", port=80)

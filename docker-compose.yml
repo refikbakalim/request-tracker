@@ -1,0 +1,47 @@
+version: '3.7'
+
+services:
+  postgresql:
+    image: postgres:11.5
+    volumes:
+      - postgre-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: postgres1234
+    restart: on-failure
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181" 
+    restart: on-failure
+  kafka:
+    container_name: kafka
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+    environment: 
+      KAFKA_ADVERTISED_HOST_NAME: localhost
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    restart: on-failure
+  server:
+    ports:
+      - "8080:80"
+    build: 
+      context: ${PWD}/server
+    restart: on-failure
+  consumer:
+    build: 
+      context: ${PWD}/consumer
+    restart: on-failure
+  producer:
+    build: 
+      context: ${PWD}/producer
+    restart: on-failure
+
+volumes:
+  postgre-data:
