@@ -31,7 +31,7 @@ def delete():
 def sleep(request):
     response_time = random.randint(0,3000)
     time.sleep(response_time/1000)
-    with open("logfile.txt", "a") as logfile:
+    with open("log/log.txt", "a") as logfile:
         logfile.write(request + "," + str(response_time) + "," + str(int(time.time())) + "\n")
 
 if __name__ == '__main__':

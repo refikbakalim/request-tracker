@@ -34,6 +34,8 @@ services:
     build: 
       context: ${PWD}/server
     restart: on-failure
+    volumes:
+      - log:/work/log
   consumer:
     build: 
       context: ${PWD}/consumer
@@ -42,6 +44,9 @@ services:
     build: 
       context: ${PWD}/producer
     restart: on-failure
+    volumes:
+      - log:/work/log
 
 volumes:
   postgre-data:
+  log:
