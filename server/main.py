@@ -1,8 +1,21 @@
 from flask import Flask
 from random import randint
 import time
+from pymongo import MongoClient
+from json import dumps
+
 
 app = Flask(__name__)
+client = MongoClient('mongodb://root:rootpassword@mongodb:27017/admin')
+collection = client.logdb.logcln
+
+@app.route('/data')
+def data():
+    dblist = []
+    for obj in collection.find({}, {'_id': False}):
+        print(obj)
+        dblist.append(obj)
+    return dumps(dblist).encode('utf-8')
 
 @app.route('/')
 def index():
