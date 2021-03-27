@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Dashboard</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+	<script src="https://www.chartjs.org/samples/latest/utils.js"></script>
+</head>
+
+<body>
+    <h1>Dashboard</h1>
+	<div>
+		<canvas id="canvas"></canvas>
+	</div>
+	<br>
+	<br>
+	<script>
+		var timeFormat = 'HH:mm:ss';
+
+        //moment(testDate).format('MM/DD/YYYY HH:mm:ss');
+
+		function newDate(days) {
+			return moment().add(days, 'd').toDate();
+		}
+
+		function newDateString(days) {
+			return moment().add(days, 'd').format(timeFormat);
+		}
+
+		var color = Chart.helpers.color;
+		var config = {
+			type: 'line',
+			data: {
+				labels: [ 
+				],
+				datasets: [{
+					label: 'GET',
+					backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+					borderColor: window.chartColors.red,
+					fill: false,
+					data: [
+					],
+				}]
+			},
+			options: {
+				title: {
+					text: 'Chart.js Time Scale'
+				},
+				scales: {
+					xAxes: [{
+						type: 'time',
+						time: {
+							parser: timeFormat,
+							// round: 'day'
+							tooltipFormat: 'HH:mm:ss'
+						},
+						scaleLabel: {
+							display: true,
+							labelString: 'Date'
+						}
+					}],
+					yAxes: [{
+						scaleLabel: {
+							display: true,
+							labelString: 'response time'
+						}
+					}]
+				},
+			}
+		};
+        update = async function(){
+                const response = await fetch('http://127.0.0.1:8080/data');
+                const data = await response.text();
+                //data = '[{"method": "GET", "response_time": "670", "timestamp": "1616853303"}, {"method": "GET", "response_time": "97", "timestamp": "1616853317"}, {"method": "GET", "response_time": "863", "timestamp": "1616853320"}, {"method": "GET", "response_time": "1043", "timestamp": "1616854929"}, {"method": "GET", "response_time": "224", "timestamp": "1616855268"}, {"method": "GET", "response_time": "2782", "timestamp": "1616861552"}, {"method": "GET", "response_time": "2030", "timestamp": "1616861713"}, {"method": "GET", "response_time": "2133", "timestamp": "1616861733"}, {"method": "GET", "response_time": "558", "timestamp": "1616861834"}, {"method": "GET", "response_time": "263", "timestamp": "1616861839"}, {"method": "GET", "response_time": "849", "timestamp": "1616862262"}, {"method": "GET", "response_time": "683", "timestamp": "1616862433"}, {"method": "GET", "response_time": "2638", "timestamp": "1616862653"}, {"method": "GET", "response_time": "1500", "timestamp": "1616863169"}, {"method": "GET", "response_time": "2212", "timestamp": "1616877503"}]';
+                parse_data = JSON.parse(data);
+
+                response_times = []
+                parse_data.forEach(element => {
+                    response_times.push(element.response_time);  
+                });
+                window.myLine.data.datasets[0].data = response_times;
+
+                timestamps = []
+                parse_data.forEach(element => {
+                    timestamps.push(new Date(element.timestamp * 1000));
+                 });
+                window.myLine.data.labels = timestamps;
+
+                window.myLine.update();
+        }
+		window.onload = function() {
+			var ctx = document.getElementById('canvas').getContext('2d');
+			window.myLine = new Chart(ctx, config);
+            update();
+            var intervalId = setInterval(update, 3000);
+		};
+	</script>
+</body>
+
+</html>

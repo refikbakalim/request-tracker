@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask , render_template
 from random import randint
 import time
 from pymongo import MongoClient
@@ -12,10 +12,14 @@ collection = client.logdb.logcln
 @app.route('/data')
 def data():
     dblist = []
-    for obj in collection.find({}, {'_id': False}):
+    for obj in collection.find({}, {'_id': False }):
         print(obj)
         dblist.append(obj)
     return dumps(dblist).encode('utf-8')
+
+@app.route('/dashboard')
+def dashboard():
+    return render_template("dashboard.html")
 
 @app.route('/')
 def index():
