@@ -10,10 +10,6 @@ path = "./log/log.txt"
 obspath = "./log"
 log_line = ""
 
-producer = KafkaProducer(bootstrap_servers=['kafka'],
-                         value_serializer=lambda x: 
-                         dumps(x).encode('utf-8'))
-
 if __name__ == "__main__":
     patterns = "*"
     ignore_patterns = ""
@@ -21,11 +17,14 @@ if __name__ == "__main__":
     case_sensitive = True
     my_event_handler = PatternMatchingEventHandler(patterns, ignore_patterns, ignore_directories, case_sensitive)
 
-
+producer = KafkaProducer(bootstrap_servers=['kafka:9092'],
+                         api_version=(2, 7, 0),
+                         value_serializer=lambda x: 
+                         dumps(x).encode('utf-8'))
 def send(string):
     with open(path,"r") as f:
         global index
-        global log_line
+        global log_line    
         f.seek(index)
         byte = f.read(1) 
         while byte != "": 
