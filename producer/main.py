@@ -8,6 +8,7 @@ from watchdog.events import PatternMatchingEventHandler
 index = 0
 path = "./log/log.txt"
 obspath = "./log"
+log_line = ""
 
 producer = KafkaProducer(bootstrap_servers=['kafka'],
                          value_serializer=lambda x: 
@@ -20,15 +21,23 @@ if __name__ == "__main__":
     case_sensitive = True
     my_event_handler = PatternMatchingEventHandler(patterns, ignore_patterns, ignore_directories, case_sensitive)
 
+
 def send(string):
-    with open(path) as f:
+    with open(path,"r") as f:
         global index
-        for i, row in enumerate(f):
-            if i == index: 
-                log_line = row.rstrip("\n")
-                index += 1
+        global log_line
+        f.seek(index)
+        byte = f.read(1) 
+        while byte != "": 
+            if byte != "\n":
+                log_line = log_line + byte
+            else:
                 producer.send('LogTopic', value = log_line)
                 print(string + " " + log_line)
+                log_line = ""
+            index += 1    
+            f.seek(index)
+            byte = f.read(1)  
 
 def on_created(event):
     send("Created")
