@@ -1,5 +1,5 @@
-from flask import Flask, render_template, request
-import random
+from flask import Flask
+from random import randint
 import time
 
 app = Flask(__name__)
@@ -10,26 +10,26 @@ def index():
 
 @app.route('/get', methods=['GET'])
 def get():
-    sleep("GET")
+    log("GET")
     return ""
 
 @app.route('/post', methods=['POST'])
 def post():
-    sleep("POST")
+    log("POST")
     return ""
 
 @app.route('/put', methods=['PUT'])
 def put():
-    sleep("PUT")
+    log("PUT")
     return ""
 
 @app.route('/delete', methods=['DELETE'])
 def delete():
-    sleep("DELETE")
+    log("DELETE")
     return ""
 
-def sleep(request):
-    response_time = random.randint(0,3000)
+def log(request):
+    response_time = randint(0,3000)
     time.sleep(response_time/1000)
     with open("log/log.txt", "a") as logfile:
         logfile.write(request + "," + str(response_time) + "," + str(int(time.time())) + "\n")
