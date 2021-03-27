@@ -1,20 +1,21 @@
 version: '3.7'
 
 services:
-  postgresql:
-    image: postgres:11.5
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
     volumes:
-      - postgre-data:/var/lib/postgresql/data
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - mongodb_data_container:/data/db
     ports:
-      - "5432:5432"
-    expose:
-      - "5432"
+      - "27017:27017"
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
-      POSTGRES_PASSWORD: postgres1234
+      - MONGO_INITDB_DATABASE=datab
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=rootpassword
     restart: on-failure
   zookeeper:
+    container_name: zookeeper
     image: wurstmeister/zookeeper
     ports:
       - "2181:2181" 
@@ -25,10 +26,12 @@ services:
     ports:
       - "9092:9092"
     environment: 
-      KAFKA_ADVERTISED_HOST_NAME: localhost
+      KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "LogTopic:1:1"
     restart: on-failure
   server:
+    container_name: server
     ports:
       - "8080:80"
     build: 
@@ -37,10 +40,12 @@ services:
     volumes:
       - log:/work/log
   consumer:
+    container_name: consumer
     build: 
       context: ${PWD}/consumer
     restart: on-failure
   producer:
+    container_name: producer
     build: 
       context: ${PWD}/producer
     restart: on-failure
@@ -50,3 +55,4 @@ services:
 volumes:
   postgre-data:
   log:
+  mongodb_data_container:
