@@ -29,6 +29,8 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: kafka
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_CREATE_TOPICS: "LogTopic:1:1"
+    depends_on:
+      - zookeeper
     restart: on-failure
   server:
     container_name: server
@@ -43,6 +45,9 @@ services:
     container_name: consumer
     build: 
       context: ${PWD}/consumer
+    depends_on:
+      - kafka
+      - mongodb
     restart: on-failure
   producer:
     container_name: producer
@@ -51,8 +56,10 @@ services:
     restart: on-failure
     volumes:
       - log:/work/log
+    depends_on:
+      - kafka
+      - server
 
 volumes:
-  postgre-data:
   log:
   mongodb_data_container:
