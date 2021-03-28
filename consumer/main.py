@@ -18,9 +18,7 @@ collection = client.logdb.logcln
 while True:
     for message in consumer:
         message = message.value
-        print(message)
         splitted = message.split(",")
-        print(splitted)
         message_dict = {"method":splitted[0], "response_time": splitted[1], "timestamp": splitted[2]}
         collection.insert_one(message_dict)
-        print('{} added to {}'.format(message_dict, collection))
+    sleep(1)

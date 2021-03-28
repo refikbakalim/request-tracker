@@ -1,6 +1,6 @@
 from kafka import KafkaProducer
-import os.path
 import time 
+import os.path
 from json import dumps
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
@@ -21,7 +21,7 @@ producer = KafkaProducer(bootstrap_servers=['kafka:9092'],
                          api_version=(2, 7, 0),
                          value_serializer=lambda x: 
                          dumps(x).encode('utf-8'))
-def send(string):
+def send():
     with open(path,"r") as f:
         global index
         global log_line    
@@ -32,20 +32,19 @@ def send(string):
                 log_line = log_line + byte
             else:
                 producer.send('LogTopic', value = log_line)
-                print(string + " " + log_line)
                 log_line = ""
             index += 1    
             f.seek(index)
             byte = f.read(1)  
 
 def on_created(event):
-    send("Created")
+    send()
 
 def on_modified(event):
-    send("Modified")
+    send()
 
 if os.path.exists(path) == True:
-    send("Exists")
+    send()
 
 my_event_handler.on_created = on_created
 my_event_handler.on_modified = on_modified
@@ -57,7 +56,7 @@ my_observer.schedule(my_event_handler, obspath, recursive=go_recursively)
 my_observer.start()
 try:
     while True:
-        time.sleep(2)
+        time.sleep(1)
 except KeyboardInterrupt:
     my_observer.stop()
     my_observer.join()
