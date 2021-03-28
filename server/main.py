@@ -12,9 +12,10 @@ collection = client.logdb.logcln
 @app.route('/data')
 def data():
     dblist = []
-    for obj in collection.find({}, {'_id': False }):
-        print(obj)
-        dblist.append(obj)
+    startEpoch = int(time.time()-3600)
+    for obj in collection.find({"timestamp": {"$gte": str(startEpoch) }}, {'_id': False }):
+        if obj not in dblist:
+            dblist.append(obj)
     return dumps(dblist).encode('utf-8')
 
 @app.route('/dashboard')
