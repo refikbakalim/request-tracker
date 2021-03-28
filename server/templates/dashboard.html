@@ -120,10 +120,10 @@
 				parse_data.forEach(element => {
 					if(element.method == "GET")
 						get_datas.push({ x: new Date(element.timestamp * 1000), y: element.response_time });  
-					else if(element.method == "PUT")
-						put_datas.push({ x: new Date(element.timestamp * 1000), y: element.response_time }); 
 					else if(element.method == "POST")
 						post_datas.push({ x: new Date(element.timestamp * 1000), y: element.response_time }); 
+					else if(element.method == "PUT")
+						put_datas.push({ x: new Date(element.timestamp * 1000), y: element.response_time }); 	
 					else del_datas.push({ x: new Date(element.timestamp * 1000), y: element.response_time }); 
 					});
 
