@@ -9,25 +9,39 @@
 </head>
 
 <body>
-    <h1>Dashboard</h1>
+    <h1 style="font-family:Arial">Dashboard</h1>
+	<h3 style="font-family:Arial">Response times to requests in the last hour</h3>
+	<input name="fill" type="button" id="fill" value="Fill/Unfill under lines" onclick="fill()" />
+	<div style="width:80%;">
+		<canvas id="canvas"></canvas>
+	</div>
 	<div>
 		<canvas id="canvas"></canvas>
 	</div>
 	<br>
 	<br>
 	<script>
+		let value = 0;
+		function fill() {		
+			if(value == 0)
+			{
+				for(i=0 ; i<4 ; i++)
+				{
+					window.myLine.data.datasets[i].fill = true;
+				}
+				value = 1;
+				
+			}
+			else
+			{
+				for(i=0 ; i<4 ; i++)
+				{
+					window.myLine.data.datasets[i].fill = false;
+				}
+				value = 0;
+			}
+        }
 		var timeFormat = 'HH:mm:ss';
-
-        //moment(testDate).format('MM/DD/YYYY HH:mm:ss');
-
-		function newDate(days) {
-			return moment().add(days, 'd').toDate();
-		}
-
-		function newDateString(days) {
-			return moment().add(days, 'd').format(timeFormat);
-		}
-
 		var color = Chart.helpers.color;
 		var config = {
 			type: 'line',
@@ -36,8 +50,33 @@
 				],
 				datasets: [{
 					label: 'GET',
+					lineTension: 0,
 					backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
 					borderColor: window.chartColors.red,
+					fill: false,
+					data: [
+					],
+				},{
+					label: 'POST',
+					lineTension: 0,
+					backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
+					borderColor: window.chartColors.blue,
+					fill: false,
+					data: [
+					],
+				},{
+					label: 'PUT',
+					lineTension: 0,
+					backgroundColor: color(window.chartColors.yellow).alpha(0.5).rgbString(),
+					borderColor: window.chartColors.yellow,
+					fill: false,
+					data: [
+					],
+				},{
+					label: 'DELETE',
+					lineTension: 0,
+					backgroundColor: color(window.chartColors.purple).alpha(0.5).rgbString(),
+					borderColor: window.chartColors.purple,
 					fill: false,
 					data: [
 					],
@@ -45,25 +84,24 @@
 			},
 			options: {
 				title: {
-					text: 'Chart.js Time Scale'
+					text: 'Request Time Scale'
 				},
 				scales: {
 					xAxes: [{
 						type: 'time',
 						time: {
 							parser: timeFormat,
-							// round: 'day'
 							tooltipFormat: 'HH:mm:ss'
 						},
 						scaleLabel: {
 							display: true,
-							labelString: 'Date'
+							labelString: 'date'
 						}
 					}],
 					yAxes: [{
 						scaleLabel: {
 							display: true,
-							labelString: 'response time'
+							labelString: 'response time (ms)'
 						}
 					}]
 				},
@@ -72,20 +110,27 @@
         update = async function(){
                 const response = await fetch('http://127.0.0.1:8080/data');
                 const data = await response.text();
-                //data = '[{"method": "GET", "response_time": "670", "timestamp": "1616853303"}, {"method": "GET", "response_time": "97", "timestamp": "1616853317"}, {"method": "GET", "response_time": "863", "timestamp": "1616853320"}, {"method": "GET", "response_time": "1043", "timestamp": "1616854929"}, {"method": "GET", "response_time": "224", "timestamp": "1616855268"}, {"method": "GET", "response_time": "2782", "timestamp": "1616861552"}, {"method": "GET", "response_time": "2030", "timestamp": "1616861713"}, {"method": "GET", "response_time": "2133", "timestamp": "1616861733"}, {"method": "GET", "response_time": "558", "timestamp": "1616861834"}, {"method": "GET", "response_time": "263", "timestamp": "1616861839"}, {"method": "GET", "response_time": "849", "timestamp": "1616862262"}, {"method": "GET", "response_time": "683", "timestamp": "1616862433"}, {"method": "GET", "response_time": "2638", "timestamp": "1616862653"}, {"method": "GET", "response_time": "1500", "timestamp": "1616863169"}, {"method": "GET", "response_time": "2212", "timestamp": "1616877503"}]';
                 parse_data = JSON.parse(data);
 
-                response_times = []
-                parse_data.forEach(element => {
-                    response_times.push(element.response_time);  
-                });
-                window.myLine.data.datasets[0].data = response_times;
+                get_datas = []
+				put_datas = []
+				post_datas = []
+				del_datas = []
 
-                timestamps = []
                 parse_data.forEach(element => {
-                    timestamps.push(new Date(element.timestamp * 1000));
-                 });
-                window.myLine.data.labels = timestamps;
+					if(element.method == "GET")
+						get_datas.push({ x: new Date(element.timestamp * 1000), y: element.response_time });  
+					else if(element.method == "PUT")
+						put_datas.push({ x: new Date(element.timestamp * 1000), y: element.response_time }); 
+					else if(element.method == "POST")
+						post_datas.push({ x: new Date(element.timestamp * 1000), y: element.response_time }); 
+					else del_datas.push({ x: new Date(element.timestamp * 1000), y: element.response_time }); 
+                });
+
+                window.myLine.data.datasets[0].data = get_datas;
+				window.myLine.data.datasets[1].data = put_datas;
+				window.myLine.data.datasets[2].data = post_datas;
+				window.myLine.data.datasets[3].data = del_datas;
 
                 window.myLine.update();
         }
