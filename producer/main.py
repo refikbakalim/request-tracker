@@ -8,7 +8,6 @@ from watchdog.events import PatternMatchingEventHandler
 index = 0
 path = "./log/log.txt"
 obspath = "./log"
-log_line = ""
 
 if __name__ == "__main__":
     patterns = "*"
@@ -24,7 +23,7 @@ producer = KafkaProducer(bootstrap_servers=['kafka:9092'],
 def send():
     with open(path,"r") as f:
         global index
-        global log_line    
+        log_line = ""   
         f.seek(index)
         byte = f.read(1) 
         while byte != "": 
