@@ -40,6 +40,8 @@ services:
     restart: on-failure
     volumes:
       - log:/work/log
+    depends_on:
+      - mongodb
   consumer:
     container_name: consumer
     build: 
