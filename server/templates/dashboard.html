@@ -9,9 +9,10 @@
 </head>
 
 <body>
-    <h1 style="font-family:Arial">Dashboard</h1>
+	<h1 style="font-family:Arial">Dashboard</h1>
 	<h3 style="font-family:Arial">Response times to requests in the last hour</h3>
-	<input name="fill" type="button" id="fill" value="Fill/Unfill under lines" onclick="fill()" />
+	<input name="fill" type="checkbox" id="fill" onclick="fill()" />
+	<label for="fill"> Fill/Unfill under lines</label><br>
 	<div style="width:80%;">
 		<canvas id="canvas"></canvas>
 	</div>
@@ -30,7 +31,6 @@
 					window.myLine.data.datasets[i].fill = true;
 				}
 				value = 1;
-				
 			}
 			else
 			{
@@ -40,7 +40,8 @@
 				}
 				value = 0;
 			}
-        }
+			window.myLine.update();
+		}
 		var timeFormat = 'HH:mm:ss';
 		var color = Chart.helpers.color;
 		var config = {
@@ -112,12 +113,12 @@
                 const data = await response.text();
                 parse_data = JSON.parse(data);
 
-                get_datas = []
+				get_datas = []
 				put_datas = []
 				post_datas = []
 				del_datas = []
 
-                parse_data.forEach(element => {
+				parse_data.forEach(element => {
 					if(element.method == "GET")
 						get_datas.push({ x: new Date(element.timestamp * 1000), y: element.response_time });  
 					else if(element.method == "PUT")
@@ -127,7 +128,7 @@
 					else del_datas.push({ x: new Date(element.timestamp * 1000), y: element.response_time }); 
                 });
 
-                window.myLine.data.datasets[0].data = get_datas;
+				window.myLine.data.datasets[0].data = get_datas;
 				window.myLine.data.datasets[1].data = put_datas;
 				window.myLine.data.datasets[2].data = post_datas;
 				window.myLine.data.datasets[3].data = del_datas;
@@ -137,8 +138,8 @@
 		window.onload = function() {
 			var ctx = document.getElementById('canvas').getContext('2d');
 			window.myLine = new Chart(ctx, config);
-            update();
-            var intervalId = setInterval(update, 3000);
+			update();
+			var intervalId = setInterval(update, 3000);
 		};
 	</script>
 </body>
