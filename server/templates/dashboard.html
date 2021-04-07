@@ -4,7 +4,7 @@
 		<title>Dashboard</title>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-		<script src="https://www.chartjs.org/samples/latest/utils.js"></script>
+		<script src="https://www.chartjs.org/samples/2.9.4/utils.js"></script>
 	</head>
 
 	<body>
@@ -134,6 +134,7 @@
 
 				window.myLine.update();
 			}
+			
 			window.onload = function() {
 				var ctx = document.getElementById('canvas').getContext('2d');
 				window.myLine = new Chart(ctx, config);
