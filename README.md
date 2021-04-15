@@ -25,5 +25,3 @@ later you can view the data as line graph at
 - Consumer takes logs from the "LogTopic" and after connecting to Mongodb, it uploads them to database.  
 - Server reads the last one hours' requests from database and store them in /data endpoint.  
 - Then server creates a live line graph that refreshes itself every 3 seconds in /dashboard endpoint.
-
-gAAAAABgUn3T_2HCRP7s5RgDwWJNTzNY2tE83AR6YLZNcnACKIc_kXJlcfA52GrUJ2-zk1OSM-0RggncXtFQ2kNO6NfvQTvL6c6_CjUJELo5e65ey_5hYuMGG-GhEZ0QljSn7ppPHt_0VH7D7OTRBDNscgXSpwl9VXyW5g1F52I5BTkh84rsfa0bxDuTQXe8ni7Z_YLl4_GQ6M_-6EUmiAHa8L-NsSUOyA==
