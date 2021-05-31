@@ -3,7 +3,7 @@ A program that tracks **_response times_ to the requests done**, and shows it wi
 ![samplegraph](https://user-images.githubusercontent.com/80488910/112766093-f04b1780-9018-11eb-8ae7-3ff7c7c339c1.png)
 ## Installation
 1. Install docker
-2. "docker-compose up -d" in the console.
+2. "docker-compose up -d" in the terminal.
 
 ## Usage
 Send appropriate requests to
