@@ -19,7 +19,6 @@ later you can view the data as line graph at
 - 127.0.0.1:8080/dashboard
 
 ## More in-depth explanation
-- The decoder that is used to decode the assignment added as "decoder.py"
 - The server checks for requests and write them to logfile.txt with corresponding **response time** and **timestamp**. Response times are randomly generated between 0-3 seconds.  
 - Producer reads the logfile and sends them through **kafka** to the topic "LogTopic". Two things done to reduce the resources to read the logfile. First, **python-watchdog** was added so producer only reads logfile when the logfile is modified. Second, producer saves the last index it already read so it can start reading further from that index.
 - Consumer takes logs from the "LogTopic" and after connecting to Mongodb, it uploads them to database.  
